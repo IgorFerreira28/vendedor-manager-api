@@ -1,3 +1,5 @@
+#routes/routes_sales.py
+
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile
 from api.controllers.controller_sales import insert_sales_to_database
 from database.session import get_db

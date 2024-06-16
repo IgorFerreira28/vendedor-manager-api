@@ -1,11 +1,11 @@
-# api/models/vendedores.py
+# api/database/vendedores.py
 
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Date
 from database.base import Base
 
 # Modelo dos dados do vendedor
 class Vendedor(Base):
-    __tablename__ = "vendedores"
+    __tablename__ = "sellers"
 
     cpf = Column(Integer, primary_key=True, index=True)
     nome = Column(String, index=True, nullable=False)

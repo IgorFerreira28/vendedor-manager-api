@@ -1,7 +1,6 @@
 # main.py
 
 from fastapi import FastAPI
-from database.base import Base
 from api.routes.routes_sellers import router as vendedor_router
 from api.routes.routes_sales import router as vendas_router
 
