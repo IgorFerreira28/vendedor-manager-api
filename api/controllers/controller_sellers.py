@@ -3,19 +3,23 @@
 from database.session import get_db
         
 
-def get_sellers(db):
+def get_sellers(db = get_db()):
 
-    db.execute(f"SELECT * FROM sellers")
+    cursor = db.cursor()
 
-    return db.fetchall()
+    cursor.execute(f"SELECT * FROM sellers")
 
-def get_seller(cpf, db):
-    db.execute(f"SELECT * FROM sellers WHERE cpf = ?", (cpf))
+    return cursor.fetchall()
 
-    return db.fetchall()
+def get_seller(cpf, db = get_db()):
+    cursor = db.cursor()
+    
+    cursor.execute(f"SELECT * FROM sellers WHERE cpf = ?", (cpf))
+
+    return cursor.fetchall()
 
 
-def add_seller(cpf, nome, email, nascimento, uf, db):
+def add_seller(cpf, nome, email, nascimento, uf, db = get_db()):
 
     if not cpf or not nome or not email or not nascimento or not uf:
         return "Dados inválidos"
@@ -30,7 +34,7 @@ def add_seller(cpf, nome, email, nascimento, uf, db):
         return False
     
 
-def update_seller(cpf, nome, email, nascimento, uf, db):
+def update_seller(cpf, nome, email, nascimento, uf, db = get_db()):
     try:
         db.execute(
             f"UPDATE sellers SET nome = ?, email = ?, nascimento = ?, uf = ? WHERE cpf = ?", (nome, email, nascimento, uf, cpf))
@@ -39,7 +43,7 @@ def update_seller(cpf, nome, email, nascimento, uf, db):
     except:
         return False
 
-def delete_seller(cpf, db):
+def delete_seller(cpf, db = get_db()):
     try:
         db.execute(f"DELETE FROM sellers WHERE cpf = ?", (cpf))
 
