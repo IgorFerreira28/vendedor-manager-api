@@ -7,14 +7,16 @@ def get_sellers(db = get_db()):
 
     cursor = db.cursor()
 
-    cursor.execute(f"SELECT * FROM sellers")
-
-    return cursor.fetchall()
+    try:
+        cursor.execute("SELECT * FROM sellers")
+        return cursor.fetchall()
+    finally:
+        cursor.close()
 
 def get_seller(cpf, db = get_db()):
     cursor = db.cursor()
     
-    cursor.execute(f"SELECT * FROM sellers WHERE cpf = ?", (cpf))
+    cursor.execute(f"SELECT * FROM sellers WHERE cpf = ?", (cpf,))
 
     return cursor.fetchall()
 
@@ -45,8 +47,8 @@ def update_seller(cpf, nome, email, nascimento, uf, db = get_db()):
 
 def delete_seller(cpf, db = get_db()):
     try:
-        db.execute(f"DELETE FROM sellers WHERE cpf = ?", (cpf))
+        db.execute(f"DELETE FROM sellers WHERE cpf = ?", (cpf,))
 
         db.commit()
     except:
-        return False
+        return "Não foi possível deletar o vendedor"
