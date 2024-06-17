@@ -1,7 +1,44 @@
 # api/controllers/controller_sellers.py
-
+from fastapi import UploadFile, HTTPException, status
 from database.session import get_db
+import pandas as pd
         
+
+def insert_file_sellers(file: UploadFile, db = get_db()):
+    # Verifica se o arquivo é válido
+    if not file or not file.filename.endswith(".csv"):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Dados inválidos")
+
+    try:
+        # Lê o arquivo CSV
+        data = pd.read_csv(file.file)
+
+        create_table_query = """
+        CREATE TABLE IF NOT EXISTS sellers (
+            "nascimento" DATA,
+            "nome" TEXT,
+            "email" TEXT,
+            "cpf" INTEGER PRIMARY KEY,
+            "uf" TEXT
+        );
+        """
+        db.execute(create_table_query)
+        db.commit()
+
+        data.to_sql("sellers", db, if_exists="append", index=False)
+
+
+    except pd.errors.EmptyDataError:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Arquivo CSV está vazio")
+    except pd.errors.ParserError:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Erro ao analisar o arquivo CSV")
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+    finally:
+        # Certifica-se de que a conexão ao banco de dados seja fechada
+        if db:
+            db.close()
+
 
 def get_sellers(db = get_db()):
 

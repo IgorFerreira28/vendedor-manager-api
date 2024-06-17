@@ -1,11 +1,15 @@
 #api/routes/routes_sellers.py
 
-from fastapi import APIRouter, HTTPException
-from database.vendedores import Vendedor
-from api.controllers.controller_sellers import get_sellers, get_seller, add_seller, update_seller, delete_seller
+from fastapi import APIRouter, HTTPException, UploadFile
+from api.controllers.controller_sellers import get_sellers, get_seller, add_seller, update_seller, delete_seller, insert_file_sellers
 
 router = APIRouter()
 
+
+@router.post("/add/csv_sellers")
+async def add_csv_sellers(file: UploadFile):
+    insert_file_sellers(file)
+    return {"message": "Vendedores adicionados com sucesso!"}
 
 @router.post("/add/seller")
 async def add_vendedor(cpf: int, nome: str, email: str, nascimento: str, uf: str):

@@ -1,15 +1,18 @@
 #routes/routes_sales.py
 
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile
-from api.controllers.controller_sales import insert_sales_to_database
-from database.session import get_db
-from sqlite3 import Cursor
+from fastapi import APIRouter, UploadFile
+from api.controllers.controller_sales import insert_sales_to_database, insert_to_sales
 
 router = APIRouter()
 
-@router.post("/upload_csv")
-async def upload_csv(file: UploadFile, db: Cursor = Depends(get_db)):
+@router.post("/upload_sales_csv")
+async def upload_csv(file: UploadFile):
     
-    insert_sales_to_database(db, file)
+    insert_sales_to_database(file)
     
     return {"message": "Vendas inseridas com sucesso!"}
+
+@router.post("/add/sale")
+async def add_sale(cpf: int, data: str, valor: int, nome: str, cliente: str, custo: int, canal: str):
+    insert_to_sales(cpf, data, valor, nome, cliente, custo, canal)
+    return {"message": "Venda inserida com sucesso!"}
